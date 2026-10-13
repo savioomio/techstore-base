@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0 (outubro de 2026)
+
+* Frete grátis passa a valer para compras a partir de R$ 200 no valor final.
+* O carrinho mostra quanto falta para o frete grátis; o card de produto exibe o selo apenas para produtos a partir de R$ 200.
+
 ## 1.4.0 (setembro de 2026)
 
 * Novo visual do card de produto na lista, com avaliação e selos.

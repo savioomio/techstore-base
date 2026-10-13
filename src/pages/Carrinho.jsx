@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import ProdutoCard from '../components/ProdutoCard'
-import { agruparItens, calcularTotal } from '../utils/carrinho'
+import { agruparItens, calcularTotal, VALOR_MINIMO_FRETE_GRATIS } from '../utils/carrinho'
 import { validarCupom } from '../utils/cupons'
 import { formatarPreco } from '../utils/formatarPreco'
 
@@ -13,6 +13,7 @@ export default function Carrinho({ carrinho, produtos, clienteAtual, onAdicionar
   const itens = agruparItens(carrinho)
   const total = calcularTotal(carrinho)
   const totalComDesconto = cupomAplicado ? total * (1 - cupomAplicado.desconto) : total
+  const faltaFrete = Math.max(VALOR_MINIMO_FRETE_GRATIS - totalComDesconto, 0)
 
   const sugestoes = produtos
     .filter(
@@ -96,6 +97,17 @@ export default function Carrinho({ carrinho, produtos, clienteAtual, onAdicionar
             <p className="resumo-linha">
               <span>Desconto</span>
               <span>{cupomAplicado.desconto * 100}%</span>
+            </p>
+          )}
+          {faltaFrete > 0 ? (
+            <p className="resumo-linha">
+              <span className="selo selo-alerta">
+                Faltam {formatarPreco(faltaFrete)} para frete grátis
+              </span>
+            </p>
+          ) : (
+            <p className="resumo-linha">
+              <span className="selo selo-frete">Frete grátis</span>
             </p>
           )}
           <p className="total">

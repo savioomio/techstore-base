@@ -1,6 +1,8 @@
 // O carrinho guarda uma entrada por unidade adicionada.
 // Ex.: duas camisetas iguais = o mesmo produto duas vezes no array.
 
+export const VALOR_MINIMO_FRETE_GRATIS = 200
+
 export function normalizarPreco(valor) {
   const numero = Number(valor)
   return Number.isFinite(numero) ? numero : 0
