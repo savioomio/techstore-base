@@ -15,8 +15,17 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
     )
   }
 
+  const precoValido = Number.isFinite(Number(produto.price)) && Number(produto.price) > 0
+  const esgotado = produto.estoque === 0 || !precoValido
+
   const relacionados = produtos
-    .filter((item) => item.category === produto.category && item.id !== produto.id)
+    .filter(
+      (item) =>
+        item.category === produto.category &&
+        item.id !== produto.id &&
+        item.estoque > 0 &&
+        Number.isFinite(Number(item.price))
+    )
     .slice(0, 4)
 
   return (
@@ -37,16 +46,16 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
           <p className="card-avaliacao">
             ★ {produto.rating.rate} <span>({produto.rating.count} avaliações)</span>
           </p>
-          <p className="detalhe-preco">R$ {produto.price.toFixed(2).replace('.', ',')}</p>
+          <p className="detalhe-preco">{Number(produto.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
           <p className="detalhe-descricao">{produto.description}</p>
           <p className="detalhe-estoque">{produto.estoque} unidades disponíveis</p>
 
           <button
             className="botao botao-grande"
             onClick={() => onAdicionar(produto)}
-            disabled={produto.estoque === 0}
+            disabled={esgotado}
           >
-            Adicionar ao carrinho
+            {precoValido ? 'Adicionar ao carrinho' : 'Indisponível'}
           </button>
 
           <ul className="detalhe-garantias">

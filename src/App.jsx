@@ -31,7 +31,12 @@ export default function App() {
   }, [])
 
   function adicionarAoCarrinho(produto) {
-    setCarrinho(carrinho.concat(produto))
+    if (!produto || produto.estoque === 0) return
+
+    const preco = Number(produto.price)
+    if (!Number.isFinite(preco) || preco <= 0) return
+
+    setCarrinho((anterior) => anterior.concat(produto))
   }
 
   function removerUmaUnidade(produtoId) {

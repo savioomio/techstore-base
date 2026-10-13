@@ -15,7 +15,12 @@ export default function Carrinho({ carrinho, produtos, clienteAtual, onAdicionar
   const totalComDesconto = cupomAplicado ? total * (1 - cupomAplicado.desconto) : total
 
   const sugestoes = produtos
-    .filter((produto) => !carrinho.find((item) => item.id === produto.id))
+    .filter(
+      (produto) =>
+        !carrinho.find((item) => item.id === produto.id) &&
+        produto.estoque > 0 &&
+        Number.isFinite(Number(produto.price))
+    )
     .slice(0, 3)
 
   function aplicarCupom(evento) {
@@ -58,7 +63,7 @@ export default function Carrinho({ carrinho, produtos, clienteAtual, onAdicionar
               </div>
               <div className="item-info">
                 <p className="item-titulo">{item.produto.title}</p>
-                <p className="item-preco">R$ {item.produto.price}</p>
+                <p className="item-preco">{formatarPreco(item.produto.price)}</p>
               </div>
               <span className="item-quantidade">{item.quantidade} un.</span>
               <button className="botao-texto" onClick={() => onRemover(item.produto.id)}>
