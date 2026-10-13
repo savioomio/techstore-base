@@ -1,8 +1,11 @@
 import { Link, useParams } from 'react-router'
+import { useState } from 'react'
 
-export default function PaginaProduto({ produtos, onAdicionar }) {
+export default function PaginaProduto({ produtos, onAdicionar, onAdicionarNaListaDeEspera }) {
   const { id } = useParams()
   const produto = produtos.find((item) => item.id === id)
+  const [formulario, setFormulario] = useState({ nome: '', email: '' })
+  const [mensagemEspera, setMensagemEspera] = useState('')
 
   if (!produto) {
     return (
@@ -57,6 +60,56 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
           >
             {precoValido ? 'Adicionar ao carrinho' : 'Indisponível'}
           </button>
+
+          {esgotado && (
+            <form
+              className="aviso-esgotado"
+              onSubmit={(evento) => {
+                evento.preventDefault()
+
+                if (!formulario.nome.trim() || !formulario.email.trim()) {
+                  setMensagemEspera('Preencha nome e e-mail para receber o aviso.')
+                  return
+                }
+
+                const cadastrado = onAdicionarNaListaDeEspera(
+                  produto.id,
+                  formulario.nome,
+                  formulario.email
+                )
+
+                if (cadastrado) {
+                  setMensagemEspera('Você foi adicionado à lista de espera.')
+                  setFormulario({ nome: '', email: '' })
+                }
+              }}
+            >
+              <h2>Produto esgotado</h2>
+              <p>Deixe seu nome e e-mail para receber um aviso quando ele voltar.</p>
+
+              <input
+                type="text"
+                placeholder="Seu nome"
+                value={formulario.nome}
+                onChange={(evento) =>
+                  setFormulario((anterior) => ({ ...anterior, nome: evento.target.value }))
+                }
+              />
+              <input
+                type="email"
+                placeholder="Seu e-mail"
+                value={formulario.email}
+                onChange={(evento) =>
+                  setFormulario((anterior) => ({ ...anterior, email: evento.target.value }))
+                }
+              />
+              <button type="submit" className="botao botao-secundario">
+                Avise-me quando chegar
+              </button>
+
+              {mensagemEspera && <p className="mensagem-cupom">{mensagemEspera}</p>}
+            </form>
+          )}
 
           <ul className="detalhe-garantias">
             <li>Troca grátis em até 30 dias</li>
